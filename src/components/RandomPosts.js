@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 
-const POSTS_ENDPOINT = 'https://theconnectgame.com/wp-json/wp/v2/posts?per_page=10&orderby=rand';
-
-const RandomPosts = () => {
+const POSTS_ENDPOINT =
+  'https://theconnectgame.com/wp-json/wp/v2/posts?per_page=10&orderby=rand';
+const RandomPosts = ({ categoryId }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,7 +12,9 @@ const RandomPosts = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(POSTS_ENDPOINT);
+      const url =
+        categoryId != null ? `${POSTS_ENDPOINT}&categories=${categoryId}` : POSTS_ENDPOINT;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
@@ -23,7 +25,7 @@ const RandomPosts = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [categoryId]);
 
   useEffect(() => {
     fetchPosts();
@@ -51,10 +53,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f0f0',
   },
   postItem: {
     marginBottom: 12,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   title: {
     fontSize: 16,
